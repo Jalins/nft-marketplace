@@ -20,6 +20,8 @@
       "@ui/*": ["components/ui/*"],
       "@provider": ["components/provider"],
       "@provider/*": ["components/provider/*"],
+      "@hooks": ["components/hooks"],
+      "@hooks/*": ["components/hooks/*"],
       "@_types/*": ["types/*"]
     }
   },

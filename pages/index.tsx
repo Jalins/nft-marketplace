@@ -7,8 +7,15 @@ import { NFTMeta } from '@_types/nft';
 import { useWeb3 } from '@provider/web3';
 
 const HomePage: NextPage = () => {
-  const { ethereum} = useWeb3();
-  console.log(ethereum);
+  const { provider, contract} = useWeb3();
+  const getNftInfo = async () => {
+    console.log(await contract!.name());
+    console.log(await contract!.symbol());
+  };
+
+  if (contract){
+    getNftInfo();
+  }
   return (
     <BaseLayout>
       
