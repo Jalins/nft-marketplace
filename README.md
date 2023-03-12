@@ -1,1 +1,1 @@
-
+前端使用nextjs框架，智能合約部分使用hardhat，数据库使用mongodb，后端连接请求使用axios
