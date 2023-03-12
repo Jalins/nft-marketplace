@@ -1,22 +1,22 @@
 {
   "name": "nft-marketplace",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Jalins/nft-marketplace.git"
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.8.2",
+    "next": "13.2.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-icons": "^4.8.0"
   },
-  "author": "jalins",
-  "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "hardhat": "^2.13.0"
-  },
-  "dependencies": {
-    "@openzeppelin/contracts": "^4.8.2"
   }
 }
