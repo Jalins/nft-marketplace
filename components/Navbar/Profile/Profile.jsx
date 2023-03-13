@@ -6,8 +6,7 @@ import Image from "next/image";
 import images from "../../../images"
 
 import { FaUserAlt, FaRegImage, FaUserEdit } from "react-icons/fa";
-import { MdHelpCenter } from "react-icons/md";
-import { TbDownload } from "react-icons/tb";
+import { MdHelpCenter,MdLogout } from "react-icons/md";
 
 const Profile = () => {
   return (
@@ -59,7 +58,7 @@ const Profile = () => {
             </p>
           </div>
           <div className={Style.profile_menu_one_item}>
-            <TbDownload />
+            <MdLogout />
             <p>
               <Link href={{ pathname: "/logout" }}>Log Out</Link>
             </p>

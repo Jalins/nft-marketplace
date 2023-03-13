@@ -1,6 +1,7 @@
 .background{
     background-color: rgb(170, 211, 228);
     width: 100%;
+    /* background-image: url('../../images/banner-2.png'); */
 }
 .navbar{
     width: 80%;
@@ -78,8 +79,9 @@
 .navbar_container_right_help_box{
     position: absolute;
     padding: 1rem .5rem;
-    font-size: 15px;
-    font-weight: 700;
+    box-shadow: var(--box-shadow);
+    font-size: 14px;
+    font-weight: 500;
     border-radius: 1rem;
     background-color: var(--main-bg-color);
 }

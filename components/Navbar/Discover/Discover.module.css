@@ -2,6 +2,7 @@
     padding: .5rem 1rem;
     transition:  all .3s ease-in;
     z-index: 2222222222;
+    width: 11rem;
 }
 
 .discover:hover{

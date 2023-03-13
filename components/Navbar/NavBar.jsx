@@ -44,7 +44,7 @@ const NavBar = () => {
   const currentAccount = ""
 
   return (
-    <div className={Style.background}>
+    <div className={Style.background} >
      <div className={Style.navbar}>
       <div className={Style.navbar_container}>
         {/* 左边logo */}

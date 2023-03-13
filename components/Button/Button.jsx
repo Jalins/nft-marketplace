@@ -5,7 +5,7 @@ const Button = ({btnName, handleClick}) => {
   return (
     <div className={Style.box}>
         <button className={Style.button} onClick={()=>handleClick()}>
-           <a className={Style.a}><BiWallet /></a>
+           {`${btnName}` == "Connect Wallet"?<BiWallet className={Style.a}/>:""}
            <a className={Style.b}>{btnName}</a>
         </button>
     </div>
