@@ -1,13 +1,8 @@
 import React from 'react'
 
-import { FirstPage } from '@/components'
-
 const Home = () => {
-  
   return (
-    <div>
-      <FirstPage />
-    </div>
+    <div>Home</div>
   )
 }
 

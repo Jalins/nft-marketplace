@@ -1,7 +1,5 @@
-import Button from "./Button/Button"
-import NavBar from "./Navbar/NavBar"
-import Footer from "./Footer/Footer"
-import FirstPage from "./FirstPage/FirstPage"
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import Button from "./Button";
 
-
-export { Button, NavBar, Footer, FirstPage }
+export { Navbar, Footer, Button }; 

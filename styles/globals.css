@@ -1,82 +1,121 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-:root{
-  --icons-color: #4c5773;
-  --icons-light-color: #4c577341;
-  --icons-bg-color: #e2e6e9;
-  --shadow-dark-color: #d3dae7;
-  --bg-shadow-dark-color: #d3dae745;
-  --shadow-light-color: #fff;
-  --main-bg-color: #ecf0f3;
-  --box-shadow: 1rem 1rem 1rem var(--shadow-dark-color),
-  -1rem -1rem 1rem var(--shadow-light-color);
-  --box-shadow-2: 0rem 0rem 0rem var(--shadow-dark-color),
-  -.3rem -.3rem 1rem var(--shadow-dark-color)
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+/* ./styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.nft-gradient {
+   background: linear-gradient(101.12deg, #EB1484 27.35%, #C91CC3 99.99%, #C81CC5 100%, #C81CC5 100%);
 }
 
-
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  background-color: var(--main-bg-color);
-  color: var(--icons-color);
+.white-bg {
+    background: rgba(255, 255, 255, 0.2);
 }
 
-input{
-  color: var(--icons-color);
+.nav-h {
+    height: calc(100vh - 66px);
 }
 
-input::placeholder{
-  color: var(--icons-color);
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
 }
 
-textarea{
-  color: var(--icons-color);
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
-textarea::placeholder{
-  color: var(--icons-color);
+.checkbox {
+    opacity: 0;
+    position: absolute;
+}
+  
+.label {
+    transform: scale(1.5);
+}
+  
+.ball {
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s linear;
+}
+  
+/*  target the elemenent after the label*/
+.checkbox:checked + .label .ball{
+    transform: translateX(16px);
+}
+  
+.fa-moon {
+    color: pink;
+    font-size: 9px;
+}
+  
+.fa-sun {
+    color: yellow;
+    font-size: 9px;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.animated {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-duration: 500ms;
+    animation-duration: 500ms;
 }
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: none;
+.fadeIn {
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
 }
 
-::selection{
-  color: var(--shadow-dark-color);
-  background: var(--icons-color);
+.flexCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-::-webkit-scrollbar{
-  width: 1rem;
-  border: 1px solid var(--main-bg-color);
+.flexBetween {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-::-webkit-scrollbar-track{
-  border-radius: 0;
-  background-color: var(--main-bg-color);
+.flexStart {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
 }
 
-::-webkit-scrollbar-thumb{
-  border-radius: 2rem;
-  background:  var(--icons-color);
-  width: .5rem;
+.flexStartCenter {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+
+.flexBetweenStart {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.flexCenterStart {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
