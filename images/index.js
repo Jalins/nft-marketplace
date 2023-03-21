@@ -80,5 +80,6 @@ export default {
   headerbg,
   loader,
   arrow,
+
   banner1,
 };

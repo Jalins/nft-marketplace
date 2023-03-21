@@ -105,9 +105,9 @@ const Navbar = () => {
 
       {/* 菜单布局 */}
       <div className='md:hidden flex'>
-          <MenuItems active={active} setActive={setActive}/>
+          <MenuItems active={active} setActive={setActive} setIsOpen={setIsOpen}/>
           <div className="ml-4">
-            <ButtonGroup setActive={setActive} router={router}/>
+            <ButtonGroup setActive={setActive} router={router} setIsOpen={setIsOpen}/>
           </div>
       </div>
 
