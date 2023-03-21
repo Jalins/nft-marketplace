@@ -38,6 +38,8 @@ import headerbg from './headerbg.png';
 import loader from './loader.gif';
 import arrow from './arrow.png';
 
+import banner1 from './banner-img-1.png';
+
 export default {
   heartOutline,
   heart,
@@ -78,4 +80,5 @@ export default {
   headerbg,
   loader,
   arrow,
+  banner1,
 };
