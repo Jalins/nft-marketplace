@@ -12,6 +12,7 @@
     "@nomiclabs/hardhat-etherscan": "^3.1.7",
     "@openzeppelin/contracts": "^4.8.2",
     "dotenv": "^16.0.3",
+    "ipfs-http-client": "^60.0.0",
     "next": "13.2.4",
     "next-theme": "^0.1.5",
     "next-themes": "^0.2.1",

@@ -6,13 +6,14 @@ import Image from 'next/image';
 
 import { Button, Input } from '../components';
 import images from '../images';
+import { NFTContext } from '@/context/context';
 
 const CreateNFT = () => {
     const { theme } = useTheme();
     const [fileUrl, setFileUrl] = useState(null);
     const [formInput, setFormInput] = useState({ price: '', name: '', description: '' });
     const router = useRouter();
-
+    const { uploadToIPFS } = useContext(NFTContext);
 
     const onDrop = useCallback(async (acceptedFile) => {
         const url = await uploadToIPFS(acceptedFile[0]);
@@ -43,39 +44,41 @@ const CreateNFT = () => {
                 {/* 上传图片区域，支持拖拽 */}
                 <div className="mt-16">
                     <p className="flex-1 font-poppins dark:text-white text-nft-black-1 font-semibold text-xl">Upload File</p>
+                    {/* 将文件上传到ipfs之后判断url是否存在，如果存在则进行预览，不存在则显示选取文件 */}
+                    {fileUrl ? (
+                        <aside className='mt-4 '>
+                            <div className='my-12 w-full flex justify-center'>
+                                <img src={fileUrl}
 
-                    <div className="mt-4">
-                        {/* 这里的fileStyle使用useMemo可以减少样式渲染的次数，提供性能 */}
-                        <div {...getRootProps()} className={fileStyle}>
-                            <input {...getInputProps()} />
-                            <div className="flexCenter text-center flex-col">
-                                <p className="flex-1 font-poppins dark:text-white text-nft-black-1 font-semibold text-xl">JPG, PNG, GIF, SVG, WEBM. Max 100mb</p>
-                                <div className="my-12 w-full flex justify-center">
-                                    <Image
-                                        src={images.upload}
-                                        width={100}
-                                        height={100}
-                                        objectFit="contain"
-                                        alt="Upload"
-                                        className={theme === 'light' ? 'filter invert' : ''}
-                                    />
-                                </div>
-                                <p className="flex-1 font-poppins dark:text-white text-nft-black-1 font-semibold text-sm">Drag and Drop File</p>
-                                <p className="flex-1 mt- 2font-poppins dark:text-white text-nft-black-1 font-semibold text-sm">or browse media on your device</p>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* 这里是将图片进行返显 */}
-                    {fileUrl && (
-                        <aside>
-                            <div>
-                                <img src={fileUrl} alt="asset_file" />
+                                    alt="asset_file" />
                             </div>
                         </aside>
-                    )}
+                    ) : (
+                        <div className="mt-4">
+                            {/* 这里的fileStyle使用useMemo可以减少样式渲染的次数，提供性能 */}
+                            <div {...getRootProps()} className={fileStyle}>
+                                <input {...getInputProps()} />
+                                <div className="flexCenter text-center flex-col">
+                                    <p className="flex-1 font-poppins dark:text-white text-nft-black-1 font-semibold text-xl">JPG, PNG, GIF, SVG, WEBM. Max 100mb</p>
+                                    <div className="my-12 w-full flex justify-center">
+                                        <Image
+                                            src={images.upload}
+                                            width={100}
+                                            height={100}
+                                            alt="Upload"
+                                            className={theme === 'light' ? 'filter invert' : ''}
+                                        />
+                                    </div>
+                                    <p className="flex-1 font-poppins dark:text-white text-nft-black-1 font-semibold text-sm">Drag and Drop File</p>
+                                    <p className="flex-1 mt- 2font-poppins dark:text-white text-nft-black-1 font-semibold text-sm">or browse media on your device</p>
 
+                                </div>
+                            </div>
+                        </div>
+                    )
+
+                    }
+                    
                 </div>
 
                 {/* nft名字区域 */}
