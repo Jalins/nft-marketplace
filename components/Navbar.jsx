@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 
 import images from "../images"
 import { Button } from './';
+import { NFTContext } from '@/context/context';
+
 
 const MenuItems = ({isMobile, active, setActive, setIsOpen}) => {
   const generateLink = (i) => {
@@ -41,9 +43,8 @@ const MenuItems = ({isMobile, active, setActive, setIsOpen}) => {
 };
 
 const ButtonGroup = ({setActive, router, setIsOpen}) => {
-   const isCreated = true;
-
-   return isCreated ? (
+   const { connectWallet, currentAccout } = useContext(NFTContext);
+   return currentAccout ? (
     <Button 
       btnName="Create" 
       classStyles="mx-2 rounded-xl"  
@@ -56,7 +57,7 @@ const ButtonGroup = ({setActive, router, setIsOpen}) => {
     <Button 
         btnName="Connect" 
         classStyles="mx-2 rounded-xl" 
-        handleClick={()=>{}}/>
+        handleClick={connectWallet}/>
    )
 };
 
