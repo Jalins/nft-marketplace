@@ -67,11 +67,11 @@ contract NFTMarketplace is ERC721URIStorage{
     }
 
     // 获取上币服务价供外部查询
-    function getCoinServicePrice() external view returns(uint256){
+    function getListingPrice() external view returns(uint256){
         return listingPrice;
     }
 
-    // 创建NFT Token
+    // 创建NFT Token，用户需要给市场拥有者支付listingPrice数量的代币，所以该函数需要使用payable修饰
     function createToken(string memory _tokenURI, uint256 price) public payable returns(uint256) {
         // 检查token uri
         require(bytes(_tokenURI).length > 0,"The _tokenUrl must be have");
@@ -93,7 +93,7 @@ contract NFTMarketplace is ERC721URIStorage{
     function createMarketItem(uint256 tokenId, uint256 price) private{
         //判断满足条件
         require(price > 0, "price must be al lest 1");
-        require(msg.value == listingPrice, "price must be equal to coinServicePrice");
+        require(msg.value == listingPrice, "price must be equal to listingPrice");
 
         // 将创建的nft记录到marketplace上
         idMarketItem[tokenId] = MarketItem(

@@ -13,7 +13,7 @@ const CreateNFT = () => {
     const [fileUrl, setFileUrl] = useState(null);
     const [formInput, setFormInput] = useState({ price: '', name: '', description: '' });
     const router = useRouter();
-    const { uploadToIPFS } = useContext(NFTContext);
+    const { uploadToIPFS, createNFT } = useContext(NFTContext);
 
     const onDrop = useCallback(async (acceptedFile) => {
         const url = await uploadToIPFS(acceptedFile[0]);
