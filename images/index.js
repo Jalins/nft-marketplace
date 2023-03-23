@@ -39,6 +39,7 @@ import loader from './loader.gif';
 import arrow from './arrow.png';
 
 import banner1 from './banner-img-1.png';
+import banner2 from './banner-2-img-1.png';
 
 export default {
   heartOutline,
@@ -82,4 +83,5 @@ export default {
   arrow,
 
   banner1,
+  banner2,
 };

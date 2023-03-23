@@ -43,8 +43,8 @@ const MenuItems = ({isMobile, active, setActive, setIsOpen}) => {
 };
 
 const ButtonGroup = ({setActive, router, setIsOpen}) => {
-   const { connectWallet, currentAccout } = useContext(NFTContext);
-   return currentAccout ? (
+   const { connectWallet, currentAccount } = useContext(NFTContext);
+   return currentAccount ? (
     <Button 
       btnName="Create" 
       classStyles="mx-2 rounded-xl"  
@@ -85,7 +85,7 @@ const Navbar = () => {
             className="cursor-pointer hidden md:flex"
             onClick={() => {
               setActive('Explore NFTs');
-              setisOpen(false);
+              setIsOpen(false);
             }}
           ><Image src={images.logo02} width={32} height={32} alt="Logo" />
           </div>

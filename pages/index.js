@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef, useContext } from 'react';
-import { Banner, CreatorCard, NFTCard } from '@/components'
+import { Banner, CreatorCard, NFTCard, Loader } from '@/components'
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import images from '../images';
 import { NFTContext } from '@/context/context';
+
 
 const Home = () => {
   const parentRef = useRef(null);
@@ -12,13 +13,15 @@ const Home = () => {
   const [hideButtons, setHideButtons] = useState(false);
   const { fetchNFTs } = useContext(NFTContext);
   const [nfts, setNfts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     fetchNFTs().then((items) => {
       setNfts(items);
-      console.log("+++++",nfts)
+      setIsLoading(false);
     })
-  },[])
+  }, [])
+
 
   const handleScroll = (direction) => {
     const { current } = scrollRef;
@@ -98,12 +101,18 @@ const Home = () => {
           <div className="flexBetween mx-4 xs:mx-0 minlg:mx-8 sm:flex-col sm:items-start">
             <h1 className="flex-1 font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold ml-0 xs:ml-0 sm:mb-4">Hot NFTs</h1>
           </div>
-          <div className="mt-3  flex flex-wrap justify-start md:justify-center">
-            {nfts.map((nft)=><NFTCard key={nft.tokenId} nft={nft}/>)}
-          </div>
-        </div>
+          {isLoading ? (
+            <div className="flexStart">
+              <Loader />
+            </div>
+          ): (
+            <div className = "mt-3  flex flex-wrap justify-start   md:justify-center">
+              {nfts.map((nft)=><NFTCard key={nft.tokenId} nft={nft} />)}
+            </div>
+          )}
       </div>
     </div>
+    </div >
   )
 }
 

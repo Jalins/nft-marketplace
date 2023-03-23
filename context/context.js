@@ -22,7 +22,7 @@ const client = ipfsHttpClient({
 export const NFTContext = React.createContext();
 
 export const NFTProvider = ({ children }) => {
-    const [currentAccout, setCurrentAccout] = useState()
+    const [currentAccount, setcurrentAccount] = useState()
 
     const nftCurrency = `${process.env.NEXT_PUBLIC_NFT_CURRENCY}`
 
@@ -33,7 +33,7 @@ export const NFTProvider = ({ children }) => {
         const accounts = await window.ethereum.request({ method: 'eth_accounts' })
 
         if (accounts.length) {
-            setCurrentAccout(accounts[0]);
+            setcurrentAccount(accounts[0]);
         } else {
             console.log("No account available ");
         }
@@ -48,8 +48,7 @@ export const NFTProvider = ({ children }) => {
         if (!window.ethereum) return alert("Please install wallet")
 
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-        setCurrentAccout(accounts[0]);
-        console.log(accounts[0])
+        setcurrentAccount(accounts[0]);
 
         window.location.reload();
     }
@@ -126,13 +125,11 @@ export const NFTProvider = ({ children }) => {
     const fetchNFTs = async () => {
         try {
             // 这里使用JsonRpcProvider的原因：业务逻辑是所有人都可以查看交易所上的NFT列表，而不是列出个人的NFT，所以不需要跟钱包进行交互
-            const provider = new ethers.providers.JsonRpcProvider("https://polygon-mumbai.g.alchemy.com/v2/TCGTB6iXUkbvxFnDvsO0bcMvSzB5v9Tn");
+            const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ACHEMY_NODE_URL + process.env.NEXT_PUBLIC_ACHEMY_KEY);
             const contract = fetchContract(provider);
 
             // 获取nft列表
             const data = await contract.fetchMarketItems();
-            console.log(data)
-
 
             // 将数据列表返回，这里因为数据是异步从区块链上获取，故使用promise来返回；data中的每个数据都包含tokenId, seller,owner,price这数据属性
 
@@ -152,8 +149,38 @@ export const NFTProvider = ({ children }) => {
             console.log(`get market items failed: ${error}`)
         }
     }
+
+    // 获取个人NFT或者当前待售的NFT
+    const fetchMyNFTsOrListedNFTs = async (type) => {
+        try {
+            const web3Modal = new Web3Modal();
+            const connection = await web3Modal.connect();
+            const provider = new ethers.providers.Web3Provider(connection);
+            const signer = provider.getSigner();
+
+            const contract = fetchContract(signer);
+
+            const data = type === "fetchMyNFTs" ? await contract.fetchMyNFTs() : await contract.fetchItemsListed()
+
+            const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price }) => {
+                // tokenURI函数继承自ERC721URIStorage合约
+                const tokenURI = await contract.tokenURI(tokenId);
+
+                // 从ipfs上将nft的元数据获取，然后对数据进行解构
+                const { data: { image, name, description } } = await axios.get(tokenURI)
+
+                const NftPrice = ethers.utils.formatUnits(price.toString(), 'ether');
+
+                return { price: NftPrice, description: description, image: image, name: name, tokenId: tokenId.toNumber(), seller: seller, owner: owner, tokenURI: tokenURI }
+            }));
+
+            return items;
+        } catch (error) {
+            console.log(`get market list items failed: ${error}`)
+        }
+    }
     return (
-        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccout, uploadToIPFS, createNFT, fetchNFTs }}>
+        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs }}>
             {children}
         </NFTContext.Provider>
     )

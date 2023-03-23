@@ -24,5 +24,15 @@ describe("NFTMarketplace", function () {
       expect(items[0].price).to.equal(25);
     });
 
+    it("查询市场待售NFT", async function () {
+      const { nftMarketplace, owner } = await loadFixture(deployNftMarketFixture);
+      await nftMarketplace.connect(owner).createToken("https://ipfs/u76s...", 25,{value:ethers.utils.parseEther("0.025")})
+      await nftMarketplace.connect(owner).createToken("https://ipfs/u76s...", 26,{value:ethers.utils.parseEther("0.025")})
+
+      const items = await nftMarketplace.connect(owner).fetchItemsListed();
+      console.log(items)
+      expect(items[1].price).to.equal(26);
+    });
+
   });
 });
