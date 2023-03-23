@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
+import axios from 'axios';
 
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { MarketAddress, MarketAddressABI } from "./abi";
@@ -67,19 +68,20 @@ export const NFTProvider = ({ children }) => {
         }
     }
 
-    const fetchContract = (signerOrProvider) => new ethers.Contract(MarketAddress,MarketAddressABI,signerOrProvider);
+    const fetchContract = (signerOrProvider) => new ethers.Contract(MarketAddress, MarketAddressABI, signerOrProvider);
 
+    //======================================== 创建nft ======================
     // 提交信息到区块链
-    const createNFT = async (formInput, fileUrl, router) =>{
+    const createNFT = async (formInput, fileUrl, router) => {
         // 1.从表单中获取数据
         const { name, description, price } = formInput;
         if (!name || !description || !price || !fileUrl) return;
 
-        const data = JSON.stringify({name, description, image:fileUrl});
+        const data = JSON.stringify({ name, description, image: fileUrl });
 
         // 2.将nft的metadata存储到ipfs中
         try {
-            const added  = await client.add(data);
+            const added = await client.add(data);
             const subdomain = 'https://fox-nft-marketplace.infura-ipfs.io';
             const url = `${subdomain}/ipfs/${added.path}`;
 
@@ -112,15 +114,46 @@ export const NFTProvider = ({ children }) => {
         const listingPrice = await contract.getListingPrice();
 
         // 组装一笔交易。当用户创建一个nft时，需要向市场合约拥有者发送服务费
-        const transaction = await contract.createToken(url, price, {value: listingPrice.toString()});
+        const transaction = await contract.createToken(url, price, { value: listingPrice.toString() });
 
         // 发送交易
         await transaction.wait();
 
+    }
 
+    // ================================= 查询NFT =========================
+    // 查询交易所上所有已上架的NFT
+    const fetchNFTs = async () => {
+        try {
+            // 这里使用JsonRpcProvider的原因：业务逻辑是所有人都可以查看交易所上的NFT列表，而不是列出个人的NFT，所以不需要跟钱包进行交互
+            const provider = new ethers.providers.JsonRpcProvider("https://polygon-mumbai.g.alchemy.com/v2/TCGTB6iXUkbvxFnDvsO0bcMvSzB5v9Tn");
+            const contract = fetchContract(provider);
+
+            // 获取nft列表
+            const data = await contract.fetchMarketItems();
+            console.log(data)
+
+
+            // 将数据列表返回，这里因为数据是异步从区块链上获取，故使用promise来返回；data中的每个数据都包含tokenId, seller,owner,price这数据属性
+
+            const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price }) => {
+                // tokenURI函数继承自ERC721URIStorage合约
+                const tokenURI = await contract.tokenURI(tokenId);
+
+                // 从ipfs上将nft的元数据获取，然后对数据进行解构
+                const { data: { image, name, description } } = await axios.get(tokenURI)
+
+                const NftPrice = ethers.utils.formatUnits(price.toString(), 'ether');
+
+                return { price: NftPrice, description: description, image: image, name: name, tokenId: tokenId.toNumber(), seller: seller, owner: owner, tokenURI: tokenURI }
+            }));
+            return items;
+        } catch (error) {
+            console.log(`get market items failed: ${error}`)
+        }
     }
     return (
-        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccout, uploadToIPFS,createNFT }}>
+        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccout, uploadToIPFS, createNFT, fetchNFTs }}>
             {children}
         </NFTContext.Provider>
     )

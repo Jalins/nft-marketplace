@@ -156,17 +156,17 @@ contract NFTMarketplace is ERC721URIStorage{
     }
 
     // 获取当前市场上未出售的nft
-    function queryMarketItems() public view returns (MarketItem[] memory){
+    function fetchMarketItems() public view returns (MarketItem[] memory){
         uint itemCount = _tokenids.current();
         uint unsoldItemCount = itemCount - _itemsSold.current();
         uint currentIndex = 0;
 
         MarketItem[] memory items = new MarketItem[](unsoldItemCount);
-        for (uint i = 0; i < unsoldItemCount; i++){
-            if (idMarketItem[i + 1].owner == address(this)){
-                items[i+1] = idMarketItem[i+1];
+        for (uint256 i = 0; i < unsoldItemCount; i++) {
+            if (idMarketItem[i + 1].owner == address(this)) {
+                items[currentIndex] = idMarketItem[i+1];
                 currentIndex += 1;
-            }   
+            }
         }
         return items;
 
