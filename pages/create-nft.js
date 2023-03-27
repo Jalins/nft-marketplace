@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 
-import { Button, Input } from '../components';
+import { Button, Input, Loader } from '../components';
 import images from '../images';
 import { NFTContext } from '@/context/context';
 
@@ -13,14 +13,12 @@ const CreateNFT = () => {
     const [fileUrl, setFileUrl] = useState(null);
     const [formInput, setFormInput] = useState({ price: '', name: '', description: '' });
     const router = useRouter();
-    const { uploadToIPFS, createNFT } = useContext(NFTContext);
+    const { isLoadingNFT,uploadToIPFS, createNFT } = useContext(NFTContext);
 
     const onDrop = useCallback(async (acceptedFile) => {
         const url = await uploadToIPFS(acceptedFile[0]);
-        console.log({ url });
         setFileUrl(url);
     }, []);
-
 
     const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
         onDrop,
@@ -36,7 +34,13 @@ const CreateNFT = () => {
     `
     ), [isDragActive, isDragAccept, isDragReject]);
 
-
+    if (isLoadingNFT) {
+        return (
+            <div className="flexStart mt-10">
+                <Loader />
+            </div>
+        );
+    }
     return (
         <div className="flex justify-center sm:bx-4 p-12 ">
             <div className="w-3/5 md:w-full">
@@ -78,7 +82,7 @@ const CreateNFT = () => {
                     )
 
                     }
-                    
+
                 </div>
 
                 {/* nft名字区域 */}

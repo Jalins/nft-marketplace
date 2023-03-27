@@ -124,7 +124,6 @@ export const NFTProvider = ({ children }) => {
         // 发送交易
         setIsLoadingNFT(true);
         await transaction.wait();
-        setIsLoadingNFT(false);
 
     }
 

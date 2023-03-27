@@ -27,7 +27,7 @@ const ResellNFT = () => {
     // 加载界面
     if (isLoadingNFT) {
         return (
-            <div className="flexStart min-h-screen">
+            <div className="flexStart mt-10">
                 <Loader />
             </div>
         );
