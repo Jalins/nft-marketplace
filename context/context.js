@@ -23,8 +23,10 @@ export const NFTContext = React.createContext();
 
 export const NFTProvider = ({ children }) => {
     const [currentAccount, setcurrentAccount] = useState()
+    const [isTrueNetwork, setIsTrueNetwork] = useState(false)
 
     const nftCurrency = `${process.env.NEXT_PUBLIC_NFT_CURRENCY}`
+    const currentChainId = `${process.env.NEXT_PUBLIC_CURRENT_CHAIN_ID}`
 
     // 检查钱包是否已连接
     const checkWalletIsConnected = async () => {
@@ -95,7 +97,7 @@ export const NFTProvider = ({ children }) => {
 
     }
 
-    const createSale = async (url, formInputPrice) => {
+    const createSale = async (url, formInputPrice, isReselling, id) => {
         // 这里使用Web3Modal这个组件与用户的钱包进行交互
         const web3modal = new Web3Modal();
         // 连接获得句柄
@@ -113,7 +115,10 @@ export const NFTProvider = ({ children }) => {
         const listingPrice = await contract.getListingPrice();
 
         // 组装一笔交易。当用户创建一个nft时，需要向市场合约拥有者发送服务费
-        const transaction = await contract.createToken(url, price, { value: listingPrice.toString() });
+        // 这里需判断是第一次上架还是第二次上架销售
+        const transaction = !isReselling
+            ? await contract.createToken(url, price, { value: listingPrice.toString() })
+            : await contract.sellToken(id, price, { value: listingPrice.toString() });
 
         // 发送交易
         await transaction.wait();
@@ -160,7 +165,7 @@ export const NFTProvider = ({ children }) => {
 
             const contract = fetchContract(signer);
 
-            const data = type === "fetchMyNFTs" ? await contract.fetchMyNFTs() : await contract.fetchItemsListed()
+            const data = type === "fetchItemsListed" ? await contract.fetchItemsListed() : await contract.fetchMyNFTs()
 
             const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price }) => {
                 // tokenURI函数继承自ERC721URIStorage合约
@@ -179,8 +184,26 @@ export const NFTProvider = ({ children }) => {
             console.log(`get market list items failed: ${error}`)
         }
     }
+
+    // ================================= 购买NFT ======================
+    const buyNFT = async (nft) => {
+        try {
+            const web3Modal = new Web3Modal();
+            const connection = await web3Modal.connect();
+            const provider = new ethers.providers.Web3Provider(connection);
+            const signer = provider.getSigner();
+
+            const contract = fetchContract(signer);
+
+            const price = ethers.utils.parseUnits(nft.price.toString(), 'ether');
+            const transaction = await contract.purchase(nft.tokenId, { value: price });
+            await transaction.wait();
+        } catch (error) {
+            console.log(`buy nft failed: ${error}`)
+        }
+    }
     return (
-        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs }}>
+        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs, buyNFT, createSale }}>
             {children}
         </NFTContext.Provider>
     )

@@ -20,7 +20,6 @@ describe("NFTMarketplace", function () {
       const { nftMarketplace, owner } = await loadFixture(deployNftMarketFixture);
       await nftMarketplace.connect(owner).createToken("https://ipfs/u76s...", 25,{value:ethers.utils.parseEther("0.025")})
       const items = await nftMarketplace.connect(owner).fetchMarketItems();
-      console.log(items[0].price)
       expect(items[0].price).to.equal(25);
     });
 
@@ -30,9 +29,26 @@ describe("NFTMarketplace", function () {
       await nftMarketplace.connect(owner).createToken("https://ipfs/u76s...", 26,{value:ethers.utils.parseEther("0.025")})
 
       const items = await nftMarketplace.connect(owner).fetchItemsListed();
-      console.log(items)
       expect(items[1].price).to.equal(26);
     });
+
+
+    it("购买NFT", async function () {
+      const { nftMarketplace, owner , otherAccount} = await loadFixture(deployNftMarketFixture);
+      // 用户A创建商家一个nft
+      await nftMarketplace.connect(owner).createToken("https://ipfs/u76s...", ethers.utils.parseEther("0.025"),{value:ethers.utils.parseEther("0.025")})
+      // 获取tokenid
+      const nft = await nftMarketplace.connect(owner).fetchItemsListed();
+      const tokenId = nft[0].tokenId
+
+      
+      // 用户B购买该nft
+      await nftMarketplace.connect(otherAccount).purchase(tokenId,{value:ethers.utils.parseEther("0.025")});
+      const items = await nftMarketplace.connect(otherAccount).fetchMyNFTs();
+      expect(items[0].owner).to.equal(otherAccount.address);
+    });
+
+   
 
   });
 });

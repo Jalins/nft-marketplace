@@ -26,7 +26,7 @@ const ListedNFTs = () => {
   if (!isLoading && nfts.length === 0) {
     return (
       <div className="flexCenter sm:p-4 p-16">
-        <h1 className="font-poppins dark:text-white text-nft-black-1 text-3xl font-extrabold">No NFTs listed for sale!</h1>
+        <h1 className="font-poppins dark:text-white text-nft-black-1 text-3xl font-extrabold mt-10">No NFTs listed for sale!</h1>
       </div>
     );
   }

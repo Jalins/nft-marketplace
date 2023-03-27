@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Image from "next/image"
 import images from "../images"
 import { shortAddress } from '../utils/shortAddress'
-import { Loader, Button,  Modal } from '@/components'
+import { Loader, Button, Modal } from '@/components'
 import { useRouter } from 'next/router';
 
 import { NFTContext } from '@/context/context'
@@ -10,41 +10,42 @@ import { NFTContext } from '@/context/context'
 // 弹窗body样式
 const PaymentBodyCMP = ({ nft, nftCurrency }) => (
     <div className="flex flex-col">
-      <div className="flexBetween">
-        <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Item</p>
-        <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Subtotal</p>
-      </div>
-  
-      <div className="flexBetweenStart my-5">
-        <div className="flex-1 flexStartCenter">
-          <div className="relative w-28 h-28">
-            <Image src={nft.image || images[`nft${nft.i}`]} layout="fill" objectFit="cover" />
-          </div>
-          <div className="flexCenterStart flex-col ml-5">
-            <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-sm minlg:text-xl">{shortAddress(nft.seller)}</p>
-            <p className="font-poppins dark:text-white text-nft-black-1 text-sm minlg:text-xl font-normal">{nft.name}</p>
-          </div>
+        <div className="flexBetween">
+            <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Item</p>
+            <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Subtotal</p>
         </div>
-  
-        <div>
-          <p className="font-poppins dark:text-white text-nft-black-1 text-sm minlg:text-xl font-normal">{nft.price} <span className="font-semibold">{nftCurrency}</span></p>
+
+        <div className="flexBetweenStart my-5">
+            <div className="flex-1 flexStartCenter">
+                <div className="relative w-28 h-28">
+                    <Image src={nft.image || images[`nft${nft.i}`]} layout="fill" objectFit="cover" />
+                </div>
+                <div className="flexCenterStart flex-col ml-5">
+                    <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-sm minlg:text-xl">{shortAddress(nft.seller)}</p>
+                    <p className="font-poppins dark:text-white text-nft-black-1 text-sm minlg:text-xl font-normal">{nft.name}</p>
+                </div>
+            </div>
+
+            <div>
+                <p className="font-poppins dark:text-white text-nft-black-1 text-sm minlg:text-xl font-normal">{nft.price} <span className="font-semibold">{nftCurrency}</span></p>
+            </div>
         </div>
-      </div>
-  
-      <div className="flexBetween mt-10">
-        <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Total</p>
-        <p className="font-poppins dark:text-white text-nft-black-1 text-base minlg:text-xl font-normal">{nft.price} <span className="font-semibold">{nftCurrency}</span></p>
-      </div>
+
+        <div className="flexBetween mt-10">
+            <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Total</p>
+            <p className="font-poppins dark:text-white text-nft-black-1 text-base minlg:text-xl font-normal">{nft.price} <span className="font-semibold">{nftCurrency}</span></p>
+        </div>
     </div>
-  );
+);
 
 
 const NFTDetails = () => {
-    const { currentAccount, nftCurrency } = useContext(NFTContext);
+    const { currentAccount, nftCurrency,  buyNFT } = useContext(NFTContext);
     const [isLoading, setIsLoading] = useState(true);
     const [nft, setNft] = useState({ image: '', tokenId: '', name: '', owner: '', price: '', seller: '', tokenURI: '' });
     const router = useRouter();
     const [paymentModal, setPaymentModal] = useState(false);
+    const [successModal, setSuccessModal] = useState(false)
 
     useEffect(() => {
         if (!router.isReady) return;
@@ -54,7 +55,7 @@ const NFTDetails = () => {
 
     const checkout = async () => {
         await buyNFT(nft);
-    
+
         setPaymentModal(false);
         setSuccessModal(true);
     };
@@ -147,6 +148,35 @@ const NFTDetails = () => {
                                 btnName="Cancel"
                                 classStyles="rounded-xl"
                                 handleClick={() => setPaymentModal(false)}
+                            />
+                        </div>
+                    )}
+                    handleClose={() => setPaymentModal(false)}
+                />
+            )}
+
+            {/* 确认支付 */}
+            {successModal && (
+                <Modal
+                    header="Payment Successful!"
+                    body={(
+                        <div className="flexCenter flex-col text-center" onClick={() => setSuccessModal(false)}>
+                            <div className="relative w-52 h-52">
+                                <Image
+                                    src={nft.image}
+                                    objectFit="cover"
+                                    layout="fill"
+                                />
+                            </div>
+                            <p className="font-poppins dark:text-white text-nft-black-1 text-sm minlg:text-xl font-normal mt-10"> You successfuly purchased <span className="font-semibold">{nft.name}</span> from <span className="font-semibold">{shortAddress(nft.seller)}</span></p>
+                        </div>
+                    )}
+                    footer={(
+                        <div className="flexCenter flex-col">
+                            <Button
+                                btnName="Check it out"
+                                classStyles="sm:mb-5 sm:mr-0 sm:mb-5 rounded-xl"
+                                handleClick={() => router.push('/my-nfts')}
                             />
                         </div>
                     )}
