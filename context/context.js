@@ -24,6 +24,7 @@ export const NFTContext = React.createContext();
 export const NFTProvider = ({ children }) => {
     const [currentAccount, setcurrentAccount] = useState()
     const [isTrueNetwork, setIsTrueNetwork] = useState(false)
+    const [isLoadingNFT, setIsLoadingNFT] = useState(false);
 
     const nftCurrency = `${process.env.NEXT_PUBLIC_NFT_CURRENCY}`
     const currentChainId = `${process.env.NEXT_PUBLIC_CURRENT_CHAIN_ID}`
@@ -121,13 +122,16 @@ export const NFTProvider = ({ children }) => {
             : await contract.sellToken(id, price, { value: listingPrice.toString() });
 
         // 发送交易
+        setIsLoadingNFT(true);
         await transaction.wait();
+        setIsLoadingNFT(false);
 
     }
 
     // ================================= 查询NFT =========================
     // 查询交易所上所有已上架的NFT
     const fetchNFTs = async () => {
+        setIsLoadingNFT(false);
         try {
             // 这里使用JsonRpcProvider的原因：业务逻辑是所有人都可以查看交易所上的NFT列表，而不是列出个人的NFT，所以不需要跟钱包进行交互
             const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ACHEMY_NODE_URL + process.env.NEXT_PUBLIC_ACHEMY_KEY);
@@ -157,6 +161,7 @@ export const NFTProvider = ({ children }) => {
 
     // 获取个人NFT或者当前待售的NFT
     const fetchMyNFTsOrListedNFTs = async (type) => {
+        setIsLoadingNFT(false);
         try {
             const web3Modal = new Web3Modal();
             const connection = await web3Modal.connect();
@@ -197,13 +202,15 @@ export const NFTProvider = ({ children }) => {
 
             const price = ethers.utils.parseUnits(nft.price.toString(), 'ether');
             const transaction = await contract.purchase(nft.tokenId, { value: price });
+            setIsLoadingNFT(true);
             await transaction.wait();
+            setIsLoadingNFT(false);
         } catch (error) {
             console.log(`buy nft failed: ${error}`)
         }
     }
     return (
-        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs, buyNFT, createSale }}>
+        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs, buyNFT, createSale, isLoadingNFT }}>
             {children}
         </NFTContext.Provider>
     )

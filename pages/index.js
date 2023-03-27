@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef, useContext } from 'react';
-import { Banner, CreatorCard, NFTCard, Loader } from '@/components'
+import { Banner, CreatorCard, NFTCard, Loader, SearchBar } from '@/components'
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import images from '../images';
 import { NFTContext } from '@/context/context';
+import { getTopCreators } from '@/utils/getTopCreator';
+import { shortAddress } from '@/utils/shortAddress';
 
 
 const Home = () => {
@@ -15,14 +17,56 @@ const Home = () => {
   const [nfts, setNfts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const [nftsCopy, setNftsCopy] = useState([]);
+  const [activeSelect, setActiveSelect] = useState('Recently Added');
+
   useEffect(() => {
     fetchNFTs().then((items) => {
       setNfts(items);
       setIsLoading(false);
+      setNftsCopy(items);
     })
   }, [])
 
+  // 对nft进行按照需求进行排序
+  useEffect(() => {
+    const sortedNfts = [...nfts];
 
+    switch (activeSelect) {
+      case 'Price (low to high)':
+        setNfts(sortedNfts.sort((a, b) => a.price - b.price));
+        break;
+      case 'Price (high to low)':
+        setNfts(sortedNfts.sort((a, b) => b.price - a.price));
+        break;
+      case 'Recently added':
+        setNfts(sortedNfts.sort((a, b) => b.tokenId - a.tokenId));
+        break;
+      default:
+        setNfts(nfts);
+        break;
+    }
+  }, [activeSelect]);
+
+  // 点击搜索时过滤匹配数据
+  const onHandleSearch = (value) => {
+    const filteredNFTs = nfts.filter(({ name }) => name.toLowerCase().includes(value.toLowerCase()));
+
+    if (filteredNFTs.length) {
+      setNfts(filteredNFTs);
+    } else {
+      setNfts(nftsCopy);
+    }
+  };
+
+  // 恢复原来的nft列表数据
+  const onClearSearch = () => {
+    if (nfts.length && nftsCopy.length) {
+      setNfts(nftsCopy);
+    }
+  };
+
+  // 处理nft创建者滑表列
   const handleScroll = (direction) => {
     const { current } = scrollRef;
 
@@ -53,6 +97,8 @@ const Home = () => {
     };
   });
 
+
+  const topCreators = getTopCreators(nftsCopy)
   return (
     <div className="flex justify-center sm:px-4 p-12">
       <div className="w-full minmd:w-4/5">
@@ -65,15 +111,15 @@ const Home = () => {
             ref={parentRef}
           >
             <div className="flex flex-row w-max overflow-x-scroll no-scrollbar select-none" ref={scrollRef}>
-              {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+              {topCreators.map((creator, i) => (
                 <CreatorCard
-                  key={`creator-${i}`}
-                  rank={i}
-                  creatorImage={images[`creator${i}`]}
-                  creatorName={`0x${makeId(3)}...${makeId(4)}`}
-                  creatorEths={10 - i * 0.5}
+                  key={creator.seller}
+                  rank={i + 1}
+                  creatorImage={images[`creator${i + 1}`]}
+                  creatorName={shortAddress(creator.seller)}
+                  creatorEths={creator.sum}
                 />
-              ))} */}
+              ))}
               {!hideButtons && (
                 <>
                   <div onClick={() => handleScroll('left')} className="absolute w-8 h-8 minlg:w-12 minlg:h-12 top-45 cursor-pointer left-0">
@@ -100,18 +146,21 @@ const Home = () => {
         <div className="mt-10">
           <div className="flexBetween mx-4 xs:mx-0 minlg:mx-8 sm:flex-col sm:items-start">
             <h1 className="flex-1 font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold ml-0 xs:ml-0 sm:mb-4">Hot NFTs</h1>
+            <div className="flex-2 sm:w-full flex flex-row sm:flex-col">
+              <SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} handleSearch={onHandleSearch} clearSearch={onClearSearch} />
+            </div>
           </div>
           {isLoading ? (
             <div className="flexStart">
               <Loader />
             </div>
-          ): (
-            <div className = "mt-3  flex flex-wrap justify-start   md:justify-center">
-              {nfts.map((nft)=><NFTCard key={nft.tokenId} nft={nft} />)}
+          ) : (
+            <div className="mt-3  flex flex-wrap justify-start   md:justify-center">
+              {nfts.map((nft) => <NFTCard key={nft.tokenId} nft={nft} />)}
             </div>
           )}
+        </div>
       </div>
-    </div>
     </div >
   )
 }
