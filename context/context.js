@@ -7,6 +7,8 @@ import axios from 'axios';
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { MarketAddress, MarketAddressABI } from "./abi";
 
+import { getAccount } from '@wagmi/core'
+
 const projectId = process.env.NEXT_PUBLIC_IPFS_PROJECT_ID;
 const projectSecret = process.env.NEXT_PUBLIC_API_KEY_SECRET;
 const auth = `Basic ${Buffer.from(`${projectId}:${projectSecret}`).toString('base64')}`;
@@ -23,38 +25,13 @@ export const NFTContext = React.createContext();
 
 export const NFTProvider = ({ children }) => {
     const [currentAccount, setcurrentAccount] = useState()
-    const [isTrueNetwork, setIsTrueNetwork] = useState(false)
     const [isLoadingNFT, setIsLoadingNFT] = useState(false);
-
     const nftCurrency = `${process.env.NEXT_PUBLIC_NFT_CURRENCY}`
-    const currentChainId = `${process.env.NEXT_PUBLIC_CURRENT_CHAIN_ID}`
 
-    // 检查钱包是否已连接
-    const checkWalletIsConnected = async () => {
-        if (!window.ethereum) return alert("Please install wallet")
-
-        const accounts = await window.ethereum.request({ method: 'eth_accounts' })
-
-        if (accounts.length) {
-            setcurrentAccount(accounts[0]);
-        } else {
-            console.log("No account available ");
-        }
-    }
 
     useEffect(() => {
-        checkWalletIsConnected();
+        setcurrentAccount(getAccount().address)
     }, [])
-
-    // 钱包主动连接函数，用户点击navbar的connect按钮后会先获取到当前的钱包用户地址，并reload页面，将地址传递给navbar页面
-    const connectWallet = async () => {
-        if (!window.ethereum) return alert("Please install wallet")
-
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-        setcurrentAccount(accounts[0]);
-
-        window.location.reload();
-    }
 
     //上传图片到ipfs
     const uploadToIPFS = async (file) => {
@@ -142,6 +119,7 @@ export const NFTProvider = ({ children }) => {
             // 将数据列表返回，这里因为数据是异步从区块链上获取，故使用promise来返回；data中的每个数据都包含tokenId, seller,owner,price这数据属性
 
             const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price }) => {
+                console.log("tokenid:", tokenId.toNumber())
                 // tokenURI函数继承自ERC721URIStorage合约
                 const tokenURI = await contract.tokenURI(tokenId);
 
@@ -191,25 +169,25 @@ export const NFTProvider = ({ children }) => {
 
     // ================================= 购买NFT ======================
     const buyNFT = async (nft) => {
-        try {
-            const web3Modal = new Web3Modal();
-            const connection = await web3Modal.connect();
-            const provider = new ethers.providers.Web3Provider(connection);
-            const signer = provider.getSigner();
-
-            const contract = fetchContract(signer);
-
-            const price = ethers.utils.parseUnits(nft.price.toString(), 'ether');
+       
+        const web3Modal = new Web3Modal();
+        const connection = await web3Modal.connect();
+        const provider = new ethers.providers.Web3Provider(connection);
+        const signer = provider.getSigner();
+        const contract = fetchContract(signer);
+        const price = ethers.utils.parseUnits(nft.price.toString(),'ether');
+        try {    
             const transaction = await contract.purchase(nft.tokenId, { value: price });
             setIsLoadingNFT(true);
             await transaction.wait();
             setIsLoadingNFT(false);
         } catch (error) {
-            console.log(`buy nft failed: ${error}`)
+            console.log("buy nft failed:", error)
+            return
         }
     }
     return (
-        <NFTContext.Provider value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs, buyNFT, createSale, isLoadingNFT }}>
+        <NFTContext.Provider value={{ nftCurrency, currentAccount, uploadToIPFS, createNFT, fetchNFTs, fetchMyNFTsOrListedNFTs, buyNFT, createSale, isLoadingNFT }}>
             {children}
         </NFTContext.Provider>
     )

@@ -8,6 +8,7 @@ import images from "../images"
 import { Button } from './';
 import { NFTContext } from '@/context/context';
 
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const MenuItems = ({isMobile, active, setActive, setIsOpen}) => {
   const generateLink = (i) => {
@@ -112,9 +113,9 @@ const Navbar = () => {
         {/* 为pc端时的展示 */}
         <Link href="/">
           <div className="flexCenter md:hidden cursor-pointer">
-            <Image src={images.logo02} width={32} height={32} al
+            <Image src={images.logo} width={32} height={32} al
             t="Logo" />
-            <p className="dark:text-white text-nft-black-1 font-semibold text-lg ml-1">MIN<span className="text-nft-red-violet">TED</span></p>
+            <p className="dark:text-white text-nft-black-1 font-semibold text-lg ml-1">FOX<span className="text-nft-green-violet">MANOR</span></p>
           </div>
         </Link>
 
@@ -126,7 +127,7 @@ const Navbar = () => {
               setActive('Explore NFTs');
               setIsOpen(false);
             }}
-          ><Image src={images.logo02} width={32} height={32} alt="Logo" />
+          ><Image src={images.logo} width={32} height={32} alt="Logo" />
           </div>
         </Link>
       </div>
@@ -147,7 +148,7 @@ const Navbar = () => {
       <div className='md:hidden flex'>
           <MenuItems active={active} setActive={setActive} setIsOpen={setIsOpen} />
           <div className="ml-4">
-            <ButtonGroup setActive={setActive} router={router} setIsOpen={setIsOpen}/>
+           <ConnectButton />
           </div>
       </div>
 
@@ -173,12 +174,12 @@ const Navbar = () => {
           )}
 
           {isOpen && (
-            <div className="fixed inset-0 top-65 dark:bg-nft-dark bg-white z-10     nav-h flex justify-between flex-col">
+            <div className="fixed inset-0 top-65 dark:bg-nft-dark bg-white z-10  nav-h flex justify-between flex-col">
               <div className="flex-1 p-4">
-                <MenuItems active={active} setIsOpen={setIsOpen} setActive=  {setActive} isMobile />
+                <MenuItems active={active} setIsOpen={setIsOpen} setActive= {setActive} isMobile />
               </div>
               <div className="p-4 border-t dark:border-nft-black-1    border-nft-gray-1">
-                <ButtonGroup setActive={setActive} setIsOpen={setIsOpen} router={router} />
+              <ConnectButton />
               </div>
             </div>
           )}

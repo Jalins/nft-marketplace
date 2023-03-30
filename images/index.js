@@ -1,10 +1,11 @@
 import heartOutline from './heart-outline.png';
 import heart from './heart.png';
-import logo from './logo.png';
 import search from './Search.png';
 import tick from './tick.png';
 import close from './close.png';
-import logo02 from './logo02.png';
+
+import logo from './logo.svg';
+
 import menu from './menu.png';
 import discord from './discord.png';
 import instagram from './instagram.png';
@@ -35,7 +36,7 @@ import creator10 from './creator10.jpg';
 import right from './right.png';
 import left from './left.png';
 import headerbg from './headerbg.png';
-import loader from './loader.gif';
+import loader from './loader.svg';
 import arrow from './arrow.png';
 
 import banner1 from './banner-img-1.png';
@@ -48,7 +49,6 @@ export default {
   search,
   tick,
   close,
-  logo02,
   menu,
   discord,
   instagram,

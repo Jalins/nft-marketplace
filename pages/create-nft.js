@@ -36,7 +36,7 @@ const CreateNFT = () => {
 
     if (isLoadingNFT) {
         return (
-            <div className="flexStart mt-10">
+            <div className="flexStart">
                 <Loader />
             </div>
         );

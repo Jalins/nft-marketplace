@@ -22,8 +22,8 @@ const Footer = () => {
       <div className=" w-full md:flex-col minmd:w-4/5 flex flex-row sm:px-4 px-16">
         <div className="flexStart flex-1 flex-col">
           <div className="cursor-pointer flexCenter">
-            <Image src={images.logo02}  width={32} height={32} alt="Logo" />
-            <p className="dark:text-white text-nft-black-1 font-semibold text-lg ml-1">MIN<span className="text-nft-red-violet">TED</span></p>
+            <Image src={images.logo}  width={32} height={32} alt="Logo" />
+            <p className="dark:text-white text-nft-black-1 font-semibold text-lg ml-1">FOX<span className="text-nft-green-violet">MANOR</span></p>
           </div>
           <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base mt-6">Get the lastest updates</p>
           <div className="md:w-full flexBetween minlg:w-557 w-357 mt-6 dark:bg-nft-black-2 bg-white dark:border-nft-black-2 border-nft-gray-2 rounded-md ">
@@ -42,7 +42,7 @@ const Footer = () => {
         </div>
         <div className="flex-1 flexBetweenStart flex-wrap ml-10 md:ml-10 md:mt-8">
           <FooterLinks
-            heading="MINTED"
+            heading="FOXMANOR"
             items={['Explore', 'How It Works', 'Contact Us']}
           />
           <FooterLinks
@@ -55,7 +55,7 @@ const Footer = () => {
       {/* 版权声明 */}
       <div className="flexCenter w-full mt-5 border-t dark:border-nft-black-1 border-nft-gray-1 sm:px-4 px-16">
         <div className="flexBetween flex-row w-full minmd:w-4/5 sm:flex-col mt-7">
-          <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base">MIN<span className="text-nft-red-violet">TED</span>, Inc. All Rights Reserved</p>
+          <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-base">FOX<span className="text-nft-green-violet">MANOR</span>, © 2023 ManorNFT™. All Rights Reserved.</p>
           <div className="flex flex-row sm:mt-4">
             {[images.instagram, images.twitter, images.discord, images.telegram].map((image, index) => (
               <div
