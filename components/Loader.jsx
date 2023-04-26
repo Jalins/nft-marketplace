@@ -4,7 +4,7 @@ import Image from "next/image"
 
 const Loader = () => (
     <div className="flexCenter w-full my-4 mt-20">
-      <Image src={images.loader} alt="loader" width={100}  />
+      <Image src={images.loader} alt="loader" width={100} height={100} />
     </div>
   );
   

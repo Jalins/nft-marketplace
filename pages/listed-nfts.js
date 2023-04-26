@@ -9,8 +9,14 @@ const ListedNFTs = () => {
 
   useEffect(()=>{
     fetchMyNFTsOrListedNFTs("fetchItemsListed").then((items)=>{
-      setNfts(items);
-      setIsLoading(false);
+      if (items === undefined){
+        setNfts([]);
+        setIsLoading(false);
+      }else {
+        setNfts(items);
+        setIsLoading(false);
+      }
+      
     })
   },[]);
 

@@ -5,6 +5,7 @@ import tick from './tick.png';
 import close from './close.png';
 
 import logo from './logo.svg';
+import avatar from './default_avatar.png';
 
 import menu from './menu.png';
 import discord from './discord.png';
@@ -84,4 +85,6 @@ export default {
 
   banner1,
   banner2,
+
+  avatar
 };

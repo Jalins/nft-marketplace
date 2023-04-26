@@ -14,13 +14,13 @@ import {
 import { configureChains } from "@wagmi/core";
 
 import { createClient, WagmiConfig } from "wagmi";
-import { polygon, polygonMumbai} from '@wagmi/core/chains'
+import { bsc, bscTestnet} from '@wagmi/core/chains'
 import { publicProvider } from '@wagmi/core/providers/public'
 
 
 const { chains, provider, webSocketProvider } = configureChains(
   [
-    polygon, polygonMumbai
+    bsc, bscTestnet
   ],
   [publicProvider()],
 );

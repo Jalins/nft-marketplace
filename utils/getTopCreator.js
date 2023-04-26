@@ -1,4 +1,7 @@
 export const getTopCreators = (nfts) => {
+    if (!nfts) {
+      return [];
+    }
     const creators = nfts.reduce((creatorObject, nft) => {
       // eslint-disable-next-line no-param-reassign
       (creatorObject[nft.seller] = creatorObject[nft.seller] || []).push(nft);

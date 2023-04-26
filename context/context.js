@@ -7,7 +7,7 @@ import axios from 'axios';
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { MarketAddress, MarketAddressABI } from "./abi";
 
-import { getAccount } from '@wagmi/core'
+import { getAccount, prepareWriteContract, writeContract, readContract } from '@wagmi/core'
 
 const projectId = process.env.NEXT_PUBLIC_IPFS_PROJECT_ID;
 const projectSecret = process.env.NEXT_PUBLIC_API_KEY_SECRET;
@@ -30,12 +30,12 @@ export const NFTProvider = ({ children }) => {
 
 
     useEffect(() => {
-        setcurrentAccount(getAccount().address)
+        setcurrentAccount(getAccount().address.toLocaleLowerCase())
     }, [])
 
     //上传图片到ipfs
     const uploadToIPFS = async (file) => {
-        const subdomain = 'https://fox-nft-marketplace.infura-ipfs.io';
+        const subdomain = `${process.env.NEXT_PUBLIC_IPFS_URL}`;
         try {
             const added = await client.add({ content: file });
 
@@ -61,7 +61,7 @@ export const NFTProvider = ({ children }) => {
         // 2.将nft的metadata存储到ipfs中
         try {
             const added = await client.add(data);
-            const subdomain = 'https://fox-nft-marketplace.infura-ipfs.io';
+            const subdomain = `${process.env.NEXT_PUBLIC_IPFS_URL}`;
             const url = `${subdomain}/ipfs/${added.path}`;
 
             // 3.将返回的url以及price存储到区块链上
@@ -76,31 +76,37 @@ export const NFTProvider = ({ children }) => {
     }
 
     const createSale = async (url, formInputPrice, isReselling, id) => {
-        // 这里使用Web3Modal这个组件与用户的钱包进行交互
-        const web3modal = new Web3Modal();
-        // 连接获得句柄
-        const connection = await web3modal.connect();
-        // 创建一个provider实例,Web3Provider会自动使用用户选择的钱包提供的节点进行连接
-        const provider = new ethers.providers.Web3Provider(connection);
-        // 从provider获取签名用户
-        const signer = provider.getSigner();
-        // 根据当前用户、合约地址、合约abi创建合约对象实例
-        const contract = fetchContract(signer)
-
         // 计算价格
         const price = ethers.utils.parseUnits(formInputPrice, 'ether');
-        // 获取nft上币服务的价格
-        const listingPrice = await contract.getListingPrice();
+        // // 获取nft上币服务的价格
+        const listingPrice = await readContract({
+            address: MarketAddress,
+            abi: MarketAddressABI,
+            functionName: 'getListingPrice',
+        })
 
         // 组装一笔交易。当用户创建一个nft时，需要向市场合约拥有者发送服务费
         // 这里需判断是第一次上架还是第二次上架销售
-        const transaction = !isReselling
-            ? await contract.createToken(url, price, { value: listingPrice.toString() })
-            : await contract.sellToken(id, price, { value: listingPrice.toString() });
-
-        // 发送交易
+        const config = !isReselling ? await prepareWriteContract({
+            address: MarketAddress,
+            abi: MarketAddressABI,
+            functionName: 'createToken',
+            args: [url, price],
+            overrides: {
+                value: listingPrice.toString(),
+            },
+        }): await prepareWriteContract({
+            address: MarketAddress,
+            abi: MarketAddressABI,
+            functionName: 'sellToken',
+            args: [id, price],
+            overrides: {
+                value: listingPrice.toString(),
+            },
+        })
         setIsLoadingNFT(true);
-        await transaction.wait();
+        const data = await writeContract(config)
+        console.log(data)
 
     }
 
@@ -110,7 +116,7 @@ export const NFTProvider = ({ children }) => {
         setIsLoadingNFT(false);
         try {
             // 这里使用JsonRpcProvider的原因：业务逻辑是所有人都可以查看交易所上的NFT列表，而不是列出个人的NFT，所以不需要跟钱包进行交互
-            const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_ACHEMY_NODE_URL + process.env.NEXT_PUBLIC_ACHEMY_KEY);
+            const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_NODEREAL_URL + process.env.NEXT_PUBLIC_NODEREAL_KEY);
             const contract = fetchContract(provider);
 
             // 获取nft列表

@@ -18,7 +18,7 @@ const PaymentBodyCMP = ({ nft, nftCurrency }) => (
         <div className="flexBetweenStart my-5">
             <div className="flex-1 flexStartCenter">
                 <div className="relative w-28 h-28">
-                    <Image src={nft.image || images[`nft${nft.i}`]} layout="fill" objectFit="cover" />
+                    <Image src={nft.image || images[`nft${nft.i}`]} alt="" fill className="cover" />
                 </div>
                 <div className="flexCenterStart flex-col ml-5">
                     <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-sm minlg:text-xl">{shortAddress(nft.seller)}</p>
@@ -68,9 +68,9 @@ const NFTDetails = () => {
             <div className="relative flex-1 flexCenter sm:px-4 p-12 border-r md:border-r-0 md:border-b dark:border-x-nft-black-1 border-nft-gray-1  mt-20">
                 <div className="relative w-557 minmd:w-2/3 minmd:h-2/3 sm:w-full sm:h-300 h-557"><Image
                     src={nft.image}
-                    objectfit="cover"
-                    className="rounded-xl shadow-lg"
-                    layout="fill"
+                    alt=""
+                    className="rounded-xl shadow-lg contain"
+                    fill
                 />
                 </div>
             </div>
@@ -88,8 +88,8 @@ const NFTDetails = () => {
                         <div className="relative w-12 h-12 minlg:w-20 minlg:h-20 mr-2">
                             <Image
                                 src={images.creator2}
-                                objectift="cover"
-                                className="rounded-full"
+                                alt=""
+                                className="rounded-full cover"
                             />
                         </div>
                         <p className="font-poppins dark:text-white text-nft-black-1 text-xs minlg:text-base font-semibold">{shortAddress(nft.seller)}</p>
@@ -178,8 +178,9 @@ const NFTDetails = () => {
                             <div className="relative w-52 h-52">
                                 <Image
                                     src={nft.image}
-                                    objectFit="cover"
-                                    layout="fill"
+                                    alt="NFT"
+                                    className="cover"
+                                    fill
                                 />
                             </div>
                             <p className="font-poppins dark:text-white text-nft-black-1 text-sm minlg:text-xl font-normal mt-10"> You successfuly purchased <span className="font-semibold">{nft.name}</span> from <span className="font-semibold">{shortAddress(nft.seller)}</span></p>

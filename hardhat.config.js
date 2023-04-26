@@ -9,8 +9,8 @@ const ACCOUNT_PRIVATE_KEY=process.env.ACCOUNT_PRIVATE_KEY
 module.exports = {
   solidity: "0.8.18",
   networks:{
-    Mumbai:{
-       url: `https://polygon-mumbai.g.alchemy.com/v2/${NEXT_PUBLIC_ACHEMY_KEY}`,
+    bnb:{
+       url: `https://bsc-testnet.nodereal.io/v1/${NEXT_PUBLIC_ACHEMY_KEY}`,
        accounts:[ACCOUNT_PRIVATE_KEY],
     }
   },

@@ -15,6 +15,7 @@ const CreateNFT = () => {
     const router = useRouter();
     const { isLoadingNFT,uploadToIPFS, createNFT } = useContext(NFTContext);
 
+    // 回显
     const onDrop = useCallback(async (acceptedFile) => {
         const url = await uploadToIPFS(acceptedFile[0]);
         setFileUrl(url);
@@ -22,7 +23,7 @@ const CreateNFT = () => {
 
     const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
         onDrop,
-        accept: 'image/*',
+        accept: "image/*",
         maxSize: 5000000,
     });
 
@@ -50,11 +51,9 @@ const CreateNFT = () => {
                     <p className="flex-1 font-poppins dark:text-white text-nft-black-1 font-semibold text-xl">Upload File</p>
                     {/* 将文件上传到ipfs之后判断url是否存在，如果存在则进行预览，不存在则显示选取文件 */}
                     {fileUrl ? (
-                        <aside className='mt-4 '>
-                            <div className='my-12 w-full flex justify-center'>
-                                <img src={fileUrl}
-
-                                    alt="asset_file" />
+                        <aside className="mt-4">
+                            <div className="my-12 w-full flex justify-center">
+                                <img src={fileUrl} alt="asset_file" />
                             </div>
                         </aside>
                     ) : (

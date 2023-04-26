@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import Image from "next/image"
-import images from "../images"
-import { shortAddress } from '../utils/shortAddress'
-import { NFTCard, Loader, SearchBar } from '@/components'
+
+
+import { NFTCard, Loader, SearchBar, Avatar } from '@/components'
 
 import { NFTContext } from '@/context/context'
 const MyNFTs = () => {
-    const { fetchMyNFTsOrListedNFTs, currentAccount } = useContext(NFTContext);
+    const { fetchMyNFTsOrListedNFTs } = useContext(NFTContext);
     const [nfts, setNfts] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
@@ -17,9 +16,14 @@ const MyNFTs = () => {
 
     useEffect(() => {
         fetchMyNFTsOrListedNFTs('none').then((items) => {
-            setNfts(items);
-            setIsLoading(false);
-            setNftsCopy(items);
+            if (items === undefined) {
+                setNfts([]);
+                setIsLoading(false);
+            } else {
+                setNfts(items);
+                setIsLoading(false);
+                setNftsCopy(items);
+            }
         })
     }, [])
 
@@ -79,18 +83,8 @@ const MyNFTs = () => {
                 <div className="absolute w-72 h-72 sm:w-56 sm:h-56 rounded-full white-bg -bottom-24 -right-14 -z-5" />
 
             </div>
-            <div className="w-full flexCenter flex-col">
-                <div className="flexCenter flex-col -mt-20 z-0">
-                    <div className="flexCenter w-40 h-40 sm:w-36 sm:h-36 p-2 bg-nft-black-2 rounded-full">
-                        <Image
-                            className="rounded-full object-cover"
-                            src={images.creator2}
-                        />
-
-                    </div>
-                    <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-2xl mt-6">{shortAddress(currentAccount)}</p>
-                </div>
-            </div>
+            
+            <Avatar/>
 
             {!isLoading && !nfts.length && !nftsCopy.length
                 ? (

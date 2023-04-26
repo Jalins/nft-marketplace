@@ -113,8 +113,7 @@ const Navbar = () => {
         {/* 为pc端时的展示 */}
         <Link href="/">
           <div className="flexCenter md:hidden cursor-pointer">
-            <Image src={images.logo} width={32} height={32} al
-            t="Logo" />
+            <Image src={images.logo} width={32} height={32} alt="Logo" />
             <p className="dark:text-white text-nft-black-1 font-semibold text-lg ml-1">FOX<span className="text-nft-green-violet">MANOR</span></p>
           </div>
         </Link>
@@ -148,7 +147,7 @@ const Navbar = () => {
       <div className='md:hidden flex'>
           <MenuItems active={active} setActive={setActive} setIsOpen={setIsOpen} />
           <div className="ml-4">
-           <ConnectButton />
+          <ConnectButton chainStatus="icon" showBalance={false} />
           </div>
       </div>
 
@@ -161,7 +160,7 @@ const Navbar = () => {
                   height={20}
                   alt="close"
                   onClick={()=>setIsOpen(false)}
-                  className={theme === 'light' && 'filter invert'}
+                  className={theme === 'light' ? 'filter invert' : ''}
               />)
               : (<Image 
                   src={images.menu}
@@ -169,7 +168,7 @@ const Navbar = () => {
                   height={25}
                   alt="menu"
                   onClick={()=>setIsOpen(true)}
-                  className={theme === 'light' && 'filter invert'}
+                  className={theme === 'light' ? 'filter invert' : ''}
                 />
           )}
 
@@ -179,7 +178,7 @@ const Navbar = () => {
                 <MenuItems active={active} setIsOpen={setIsOpen} setActive= {setActive} isMobile />
               </div>
               <div className="p-4 border-t dark:border-nft-black-1    border-nft-gray-1">
-              <ConnectButton />
+              <ConnectButton chainStatus="icon" showBalance={false} />
               </div>
             </div>
           )}
